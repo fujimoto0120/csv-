@@ -1,0 +1,6 @@
+Public Sub Auto_Open()
+
+    '保存先だけ自動取得
+    ThisWorkbook.Names("BasePath").RefersToRange.Value = ThisWorkbook.Path
+
+End Sub
