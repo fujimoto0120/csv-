@@ -1,0 +1,31 @@
+let
+    BasePathTable =
+        Excel.CurrentWorkbook(){[Name="BasePath"]}[Content],
+
+    BasePath =
+        Text.Trim(
+            Text.From(
+                Record.FieldValues(BasePathTable{0}){0}
+            )
+        ),
+
+    FilePath =
+        BasePath & "\csv保存\岐阜.csv",
+
+    Source =
+        Csv.Document(
+            File.Contents(FilePath),
+            [
+                Delimiter = ",",
+                Encoding = 932,
+                QuoteStyle = QuoteStyle.Csv
+            ]
+        ),
+
+    PromotedHeaders =
+        Table.PromoteHeaders(
+            Source,
+            [PromoteAllScalars = true]
+        )
+in
+    PromotedHeaders
