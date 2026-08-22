@@ -1,0 +1,8 @@
+Sub クエリの更新()
+
+    ' バックグラウンド更新をオフにして完了を待つ
+    ActiveWorkbook.RefreshAll
+    
+    MsgBox "更新しました。", vbInformation
+    
+End Sub
