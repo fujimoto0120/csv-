@@ -23,7 +23,7 @@ Public Sub 岐阜CSV取込()
     'コピー元のCSVを選択する
     MieFilePath = Application.GetOpenFilename( _
         FileFilter:="CSVファイル (*.csv),*.csv", _
-        Title:="岐阜の積込要求データを選択してください")
+        Title:="岐阜のデータを選択してください")
 
     'ファイル選択をキャンセルした場合
     If MieFilePath = False Then
@@ -51,7 +51,7 @@ Public Sub 岐阜CSV取込()
     '選択したCSVを「岐阜.csv」という名前でコピーする
     FileCopy CStr(MieFilePath), destinationPath
 
-    MsgBox "岐阜の積込要求データを取り込みました。" & _
+    MsgBox "岐阜のデータを取り込みました。" & _
            vbCrLf & destinationPath, vbInformation
 
     Exit Sub
