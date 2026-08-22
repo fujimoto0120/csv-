@@ -1,0 +1,66 @@
+Option Explicit
+
+Public Sub 岐阜CSV取込()
+
+'パワークエリのソースなっているcsvファイルに、突合で使用するcsvのデータをコピーするためのものです。
+'コピー先はこのブックと同じパスにあるフォルダ（例えばcsv保存用みたいな名前＋csvファイル名を指定)を指定し、そこにファイルがなければ＿
+'新しくファイルを作成するように作ってます。
+'パワークエリのほうではMコードにてブックのパスからsauceを取得してくれるようにしているので、動的パスにも対応している
+'パワークエリにて「変更された型」や「昇格したステップが見つからない」エラーが出た場合はクエリオプションのプライバシーレベルの問題か＿
+'その人のPCの環境設定に依存しているかなので、パワークエリでソースを読み込んだ後のステップにて、列ごとに型を指定すればエラーは消えます
+
+    'コピー先の固定名
+    Const FOLDER_NAME As String = "csv保存"
+    Const FILE_NAME As String = "岐阜.csv"
+
+    Dim MieFilePath As Variant
+    Dim destinationFolder As String
+    Dim destinationPath As String
+    Dim answer As VbMsgBoxResult
+
+    On Error GoTo ErrorHandler
+
+    'コピー元のCSVを選択する
+    MieFilePath = Application.GetOpenFilename( _
+        FileFilter:="CSVファイル (*.csv),*.csv", _
+        Title:="岐阜の積込要求データを選択してください")
+
+    'ファイル選択をキャンセルした場合
+    If MieFilePath = False Then
+        MsgBox "処理を中止しました。"
+        Exit Sub
+    End If
+
+    'ブックと同じ場所にある「csv保存」フォルダを指定する
+    destinationFolder = ThisWorkbook.Path & _
+                        Application.PathSeparator & _
+                        FOLDER_NAME
+
+    'フォルダがなければ作成する
+    If Dir(destinationFolder, vbDirectory) = "" Then
+        MkDir destinationFolder
+    End If
+
+    'コピー先のCSVファイルパスを作る
+    destinationPath = destinationFolder & _
+                      Application.PathSeparator & _
+                      FILE_NAME
+
+   
+
+    '選択したCSVを「岐阜.csv」という名前でコピーする
+    FileCopy CStr(MieFilePath), destinationPath
+
+    MsgBox "岐阜の積込要求データを取り込みました。" & _
+           vbCrLf & destinationPath, vbInformation
+
+    Exit Sub
+
+ErrorHandler:
+
+    MsgBox "CSVの取込中にエラーが発生しました。" & vbCrLf & _
+           "エラー番号：" & Err.Number & vbCrLf & _
+           "内容：" & Err.Description, vbCritical
+
+End Sub
+
