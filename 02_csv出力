@@ -1,0 +1,18 @@
+Option Explicit
+
+Public Sub アクティブシートをCSV出力()
+    Dim savePath As Variant
+    Dim csvBook As Workbook
+
+    savePath = Application.GetSaveAsFilename( _
+        InitialFileName:="突合データ" & "_" & Format$(Now, "yyyymmdd") & ".csv", _
+        FileFilter:="CSVファイル (*.csv),*.csv")
+
+    If VarType(savePath) = vbBoolean Then Exit Sub
+    If LCase$(Right$(CStr(savePath), 4)) <> ".csv" Then savePath = CStr(savePath) & ".csv"
+
+    ActiveSheet.Copy
+    Set csvBook = ActiveWorkbook
+    csvBook.SaveAs FileName:=CStr(savePath), fileFormat:=xlCSV, Local:=True
+    csvBook.Close SaveChanges:=False
+End Sub
