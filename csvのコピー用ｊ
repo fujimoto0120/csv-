@@ -8,12 +8,13 @@ Public Sub 岐阜CSV取込()
 'パワークエリのほうではMコードにてブックのパスからsauceを取得してくれるようにしているので、動的パスにも対応している
 'パワークエリにて「変更された型」や「昇格したステップが見つからない」エラーが出た場合はクエリオプションのプライバシーレベルの問題か＿
 'その人のPCの環境設定に依存しているかなので、パワークエリでソースを読み込んだ後のステップにて、列ごとに型を指定すればエラーは消えます
+'型指定はしてない記憶だけど、もしも型指定してるとしたら全てテキストのはず。グループ化する際やカスタム列で計算する際に日付をデータ、本数をTYPE(整数)にしてると思う
 
     'コピー先の固定名
     Const FOLDER_NAME As String = "csv保存"
     Const FILE_NAME As String = "岐阜.csv"
 
-    Dim MieFilePath As Variant
+    Dim GifuFilePath As Variant
     Dim destinationFolder As String
     Dim destinationPath As String
     Dim answer As VbMsgBoxResult
@@ -21,12 +22,12 @@ Public Sub 岐阜CSV取込()
     On Error GoTo ErrorHandler
 
     'コピー元のCSVを選択する
-    MieFilePath = Application.GetOpenFilename( _
+    GifuFilePath = Application.GetOpenFilename( _
         FileFilter:="CSVファイル (*.csv),*.csv", _
         Title:="岐阜のデータを選択してください")
 
     'ファイル選択をキャンセルした場合
-    If MieFilePath = False Then
+    If GifuFilePath = False Then
         MsgBox "処理を中止しました。"
         Exit Sub
     End If
@@ -49,7 +50,7 @@ Public Sub 岐阜CSV取込()
    
 
     '選択したCSVを「岐阜.csv」という名前でコピーする
-    FileCopy CStr(MieFilePath), destinationPath
+    FileCopy CStr(GifuFilePath), destinationPath
 
     MsgBox "岐阜のデータを取り込みました。" & _
            vbCrLf & destinationPath, vbInformation
@@ -63,4 +64,3 @@ ErrorHandler:
            "内容：" & Err.Description, vbCritical
 
 End Sub
-
