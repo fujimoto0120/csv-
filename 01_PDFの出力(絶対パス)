@@ -1,0 +1,68 @@
+Sub PDF出力()
+
+    Dim ws As Worksheet
+    Dim folderPath As String
+    Dim fileName As String
+    Dim fullPath As String
+    Dim fso As Object
+    Dim result As VbMsgBoxResult
+
+    Set ws = ThisWorkbook.Worksheets("入庫表")
+
+    '設定シートの名前付きセルから保存先を取得
+    folderPath = Trim$(CStr( _
+        ThisWorkbook.Worksheets("設定").Range("PDF保存先").Value2 _
+    ))
+
+    If folderPath = "" Then
+        MsgBox "PDFの保存先が設定されていません。", vbExclamation
+        Exit Sub
+    End If
+
+    Set fso = CreateObject("Scripting.FileSystemObject")
+
+    'フォルダの存在確認
+    If Not fso.FolderExists(folderPath) Then
+        MsgBox "保存先フォルダが見つかりません。" & vbCrLf & _
+               folderPath, vbExclamation
+        Exit Sub
+    End If
+
+    '末尾に「\」がなければ追加
+    If Right$(folderPath, 1) <> "\" Then
+        folderPath = folderPath & "\"
+    End If
+
+    '日付＋帳票名
+    fileName = Format$(Date, "yyyymmdd") & "入庫表.pdf"
+    fullPath = folderPath & fileName
+
+    '同名ファイルの確認
+    If fso.FileExists(fullPath) Then
+
+        result = MsgBox( _
+            "同名のPDFが既に存在します。" & vbCrLf & vbCrLf & _
+            fullPath & vbCrLf & vbCrLf & _
+            "上書きしますか？", _
+            vbYesNo + vbExclamation + vbDefaultButton2, _
+            "上書き確認" _
+        )
+
+        If result <> vbYes Then
+            Exit Sub
+        End If
+
+    End If
+
+    '指定範囲をPDF出力
+    ws.Range("A1:N50").ExportAsFixedFormat _
+        Type:=xlTypePDF, _
+        Filename:=fullPath, _
+        Quality:=xlQualityStandard, _
+        IncludeDocProperties:=True, _
+        IgnorePrintAreas:=False, _
+        OpenAfterPublish:=False
+
+    MsgBox "PDFを出力しました。" & vbCrLf & fullPath, vbInformation
+
+End Sub
